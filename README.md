@@ -1,4 +1,1 @@
-<<<<<<< HEAD
-=======
-
->>>>>>> dd87c1244fa7c8d5680539d4a253e8a222b114a2
+Desktopowa wersja Uponga oryginalnie stworzonego przez <a href="https://github.com/jeffizmyname">Jeffa</a>

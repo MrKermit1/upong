@@ -32,6 +32,12 @@ int main()
     {
         BeginDrawing();
 
+        if (IsKeyDown(KEY_SPACE))
+        {
+            ball.setStart(true);
+        }
+        
+
         //sprawdź kolizję
         if (CheckCollisionCircleRec(Vector2{ball.getX(), ball.getY()}, ball.getRadius(), Rectangle{player1.getX(), player1.getY(), player1.getWidth(), player1.getHeight()})){
             ball.setSpeedX(ball.getSpeedX() *-1);

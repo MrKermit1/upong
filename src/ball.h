@@ -6,6 +6,7 @@ class Ball
         float x, y;
         int speedX, speedY;
         int radius;
+        bool start = false;
     public:
         Ball(float posX, float posY, int speed_X, int speed_Y, int radius);
 
@@ -22,12 +23,14 @@ class Ball
         void setSpeedX(int a);
         void setSpeedY(int a);
         void setRadius(int a);
+        void setStart(bool a);
 
         float getX();
         float getY();
         int getSpeedX();
         int getSpeedY();
         int getRadius();
+        bool getStart();
 
 };
 

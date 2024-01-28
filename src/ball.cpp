@@ -15,18 +15,25 @@ void Ball::Draw(){
 }
 
 void Ball::Move(){
-    y += speedY;
-    x += speedX;
 
-    if (y + radius >= GetScreenHeight() || y - radius <= 0)
+    if (start)
     {
-        speedY *= -1;
-    }
+        y += speedY;
+        x += speedX;
 
-    if (x + radius >= GetScreenWidth() || x - radius <= 0)
-    {
-        speedX *= -1;
+        if (y + radius >= GetScreenHeight() || y - radius <= 0)
+        {
+            speedY *= -1;
+        }
+
+        if (x + radius >= GetScreenWidth() || x - radius <= 0)
+        {
+            speedX *= -1;
+        }
     }
+    
+
+
     
     
 }
@@ -39,6 +46,8 @@ void Ball::Reset(){
 
     speedX *= speeds[GetRandomValue(0, 1)];
     speedX *= speeds[GetRandomValue(0, 1)];
+
+    start = false;
 }
 
 void Ball::setX(float xx){
@@ -61,6 +70,10 @@ void Ball::setRadius(int a){
     radius = a;
 }
 
+void Ball::setStart(bool a){
+     start = a;
+}
+
 float Ball::getX(){
     return x;
 }
@@ -79,4 +92,8 @@ int Ball::getSpeedY(){
 
 int Ball::getRadius(){ 
     return radius;
+}
+
+bool Ball::getStart(){
+    return start;
 }

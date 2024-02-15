@@ -78,6 +78,10 @@ void Player::setScore(int a){
     score = a;
 }
 
+void Player::setName(std::string a){
+    name = a;
+}
+
 float Player::getX(){
     return x;
 }
@@ -104,5 +108,9 @@ std::string Player::getControlType(){
 
 int Player::getScore(){
     return score;
+}
+
+std::string Player::getName(){
+    return name;
 }
 

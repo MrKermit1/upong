@@ -8,6 +8,7 @@ class Player
         float width, height;
         int speed;
         unsigned int score = 0;
+        std::string name;
         std::string controlType;
     public:
         Player(int posX, int posY, float width, float height, int speed);
@@ -23,6 +24,7 @@ class Player
         void setSpeed(float a);
         void setControlType(std::string a);
         void setScore(int a);
+        void setName(std::string a);
 
         float getX();
         float getY();
@@ -31,5 +33,6 @@ class Player
         int getSpeed();
         std::string getControlType();
         int getScore();
+        std::string getName();
 };
 

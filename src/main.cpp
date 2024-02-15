@@ -4,123 +4,169 @@
 #include "Player.h"
 #include "cpu.h"
 
+std::string whoIsWinner(Player *tab){
+    for (int i = 0; i < 3; i++)
+    {
+        if (tab[i].getScore() == 15)
+        {
+            return tab[i].getName();
+        }
+        
+    }
+    
+    return "none";
+}
+
+
 int main()
 {
     const int screen_w = 1200;
     const int screen_h = 800;
     bool isCpu = true;
+    bool isGameOver = false;
+    std::string winner;
 
-    Ball ball = Ball(screen_w/2, screen_h/2, 7, 7, 20);
+    Ball ball = Ball(screen_w/2, screen_h/2, 10, 10, 10);
     Player player2;
 
-    player2.setWidth(25);
+    player2.setWidth(12.5);
     player2.setHeight(120);
     player2.setX(screen_w - player2.getWidth() - 10);
     player2.setY(screen_h/2 - player2.getHeight()/2);
-    player2.setSpeed(6);
+    player2.setSpeed(9);
+    player2.setName("Gracz 2");
     player2.setControlType("arrow");
 
     Player player1;
 
-    player1.setWidth(25);
+    player1.setWidth(12.5);
     player1.setHeight(120);
     player1.setX(10);
     player1.setY(screen_h/2 - 60);
-    player1.setSpeed(6);
+    player1.setSpeed(9);
     player1.setControlType("wsad");
+    player1.setName("Gracz 1");
 
     Cpu cpu;
 
-    cpu.setWidth(25);
+    cpu.setWidth(12.5);
     cpu.setHeight(120);
     cpu.setX(10);
     cpu.setY(screen_h/2 - cpu.getHeight()/2);
-    cpu.setSpeed(6);
+    cpu.setSpeed(9);
+    cpu.setName("Komputer");
 
     InitWindow(screen_w, screen_h, "Upong");
     SetTargetFPS(60);
     while (!WindowShouldClose())
     {
-        BeginDrawing();
 
-        if (IsKeyDown(KEY_SPACE))
+        if (!isGameOver)
         {
-            ball.setStart(true);
-        }
-        
-        if (IsKeyDown(KEY_F5))
-        {
-            isCpu = true;
-        }
-        
-        if (IsKeyDown(KEY_F6))
-        {
-            isCpu = false;
-        }
-        
 
-        //sprawdź kolizję
-        if (CheckCollisionCircleRec(Vector2{ball.getX(), ball.getY()}, ball.getRadius(), Rectangle{player1.getX(), player1.getY(), player1.getWidth(), player1.getHeight()})){
-            ball.setSpeedX(ball.getSpeedX() *-1);
-        }
-        if (CheckCollisionCircleRec(Vector2{ball.getX(), ball.getY()}, ball.getRadius(), Rectangle{player2.getX(), player2.getY(), player2.getWidth(), player2.getHeight()})){
-            ball.setSpeedX(ball.getSpeedX() *-1);
-        }
-        if (CheckCollisionCircleRec(Vector2{ball.getX(), ball.getY()}, ball.getRadius(), Rectangle{cpu.getX(), cpu.getY(), cpu.getWidth(), cpu.getHeight()})){
-            ball.setSpeedX(ball.getSpeedX() *-1);
-        }
-        if (ball.getX() - ball.getRadius() <= 0 )
-        {
-            player2.setScore(player2.getScore() +1);
-            ball.Reset();
-        }
-        if (ball.getX() - ball.getRadius() <= 0 )
-        {
-            cpu.setScore(cpu.getScore() +1);
-            ball.Reset();
-        }
-        if (ball.getX() + ball.getRadius() >= screen_w)
-        {
-            player1.setScore(player1.getScore() +1);
-            ball.Reset();
-        }
-        
-        
+            if (ball.getX() - ball.getRadius() <= 0){
+                player2.setScore(player2.getScore() + 1); // Increment player2's score
+                std::cout << "x: " << ball.getX() << " y: " << ball.getY() << std::endl;
+                ball.Reset();
+            }
+            else if (CheckCollisionCircleRec(Vector2{ball.getX(), ball.getY()}, ball.getRadius(), Rectangle{player1.getX(), player1.getY(), player1.getWidth(), player1.getHeight()})){
+                ball.setSpeedX(ball.getSpeedX() *-1);
+            }
+            else if (CheckCollisionCircleRec(Vector2{ball.getX(), ball.getY()}, ball.getRadius(), Rectangle{player2.getX(), player2.getY(), player2.getWidth(), player2.getHeight()}) || ball.getX() == 5){
+                ball.setSpeedX(ball.getSpeedX() *-1);
+            }
+            else if (CheckCollisionCircleRec(Vector2{ball.getX(), ball.getY()}, ball.getRadius(), Rectangle{cpu.getX(), cpu.getY(), cpu.getWidth(), cpu.getHeight()}) || ball.getX() == 5){
+                ball.setSpeedX(ball.getSpeedX() *-1);
+            }
+            else if (ball.getX() + ball.getRadius() >= GetScreenWidth())
+            {
+                cpu.setScore(cpu.getScore() +1);
+                player1.setScore(player1.getScore() +1);
+                ball.Reset();
+            }
 
-        ClearBackground(BLACK);
-        //przemieszczanie się kółka
-        ball.Move();
-        if (!isCpu){
-            player1.Move();
-            player2.Move();
-        }else{
-            cpu.Update(ball.getY());
-            player2.Move();
-        }
-        
-        //rysuj linie na połowie
-        DrawLine(screen_w/2, 0, screen_w/2, screen_h, WHITE);
+            if(player1.getScore() == 15 || player2.getScore() == 15 || cpu.getScore() == 15){
+                BeginDrawing();
+                ClearBackground(BLACK);
+                Player arr[3] = {player1, player2, cpu};
+                winner = "Wygral: " + whoIsWinner(arr);
+                const char *c = winner.c_str();
+                DrawText(c, screen_w - MeasureText(winner.c_str(), 80), screen_h/2, 80, WHITE);
+                EndDrawing();
+            }
 
-        //rysuj kółko
-        ball.Draw();
+            BeginDrawing();
 
-        //rysuj panele
-        if (!isCpu)
+
+
+            ClearBackground(BLACK);
+            //przemieszczanie się kółka
+            ball.Move();
+            if (!isCpu){
+                player1.Move();
+                player2.Move();
+                cpu.setScore(0);
+            }else{
+                cpu.Update(ball.getY());
+                player1.setScore(0);
+                player2.Move();
+            }
+            //rysuj linie na połowie
+            DrawLine(screen_w/2, 0, screen_w/2, screen_h, WHITE);
+            //rysuj kółko
+            ball.Draw();
+            //rysuj panele
+            if (!isCpu)
+            {
+                player1.Draw();
+                player2.Draw();
+            }else{
+                cpu.Draw();
+                player2.Draw();
+            }
+             if (IsKeyDown(KEY_SPACE))
+            {                              
+                ball.setStart(true);
+            }
+
+            if (IsKeyDown(KEY_F5))
+            {
+                isCpu = true;
+                player1.setScore(0);
+            }
+
+            if (IsKeyDown(KEY_F6))
+            {
+                isCpu = false;
+                cpu.setScore(0);
+            }
+
+            if (!isCpu){
+                DrawText(TextFormat("%i", player1.getScore()), screen_w/4 - 20, 20, 80, WHITE);
+            }else{
+                DrawText(TextFormat("%i", cpu.getScore()), screen_w/4 - 20, 20, 80, WHITE);
+            }
+
+            DrawText(TextFormat("%i", player2.getScore()), 3 * screen_w/4 - 20, 20, 80, WHITE);
+            EndDrawing();
+        }   
+        if (player1.getScore() == 15 || player2.getScore() == 15 || cpu.getScore() == 15)
         {
-            player1.Draw();
-            player2.Draw();
-        }else{
-            cpu.Draw();
-            player2.Draw();
+            isGameOver = true;
+
+            BeginDrawing();
+            ClearBackground(BLACK);
+
+            // Draw the winner information
+            Player arr[3] = {player1, player2, cpu};
+            winner = "Wygral: " + whoIsWinner(arr);
+            const char *c = winner.c_str();
+            DrawText(c, (screen_w - MeasureText(c, 80))/2, screen_h/2, 80, WHITE);
+
+            EndDrawing();
         }
-        
-        
-        DrawText(TextFormat("%i", player1.getScore()), screen_w/4 - 20, 20, 80, WHITE);
-        DrawText(TextFormat("%i", player2.getScore()), 3 * screen_w/4 - 20, 20, 80, WHITE);
-        EndDrawing();
     }
     
     CloseWindow();
-
     return 0;
 }

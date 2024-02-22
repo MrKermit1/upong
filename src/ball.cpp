@@ -1,12 +1,13 @@
 #include "Ball.h"
 #include <raylib.h>
 
-Ball::Ball(float posX, float posY, int speed_X, int speed_Y, int radius){
+Ball::Ball(float posX, float posY, int speed_X, int speed_Y, int radius, Sound s){
     x = posX;
     y = posY;
     speedX = speed_X;
     speedY = speed_Y;
     this->radius = radius;
+    sound = s;
 }
 
 
@@ -24,11 +25,13 @@ void Ball::Move(){
         if (y + radius >= GetScreenHeight() || y - radius <= 0)
         {
             speedY *= -1;
+            PlaySound(sound);
         }
 
         if (x + radius >= GetScreenWidth() || x - radius <= 0)
         {
             speedX *= -1;
+            PlaySound(sound);
         }
     }
     

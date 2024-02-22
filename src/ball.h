@@ -1,5 +1,5 @@
 #pragma once
-
+#include <raylib.h>
 class Ball
 {
     private:
@@ -7,8 +7,9 @@ class Ball
         int speedX, speedY;
         int radius;
         bool start = false;
+        Sound sound;
     public:
-        Ball(float posX, float posY, int speed_X, int speed_Y, int radius);
+        Ball(float posX, float posY, int speed_X, int speed_Y, int radius, Sound s);
 
         //rysuj koło
         void Draw();

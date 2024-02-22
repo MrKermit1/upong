@@ -17,6 +17,18 @@ std::string whoIsWinner(Player *tab){
     return "none";
 }
 
+void fullScreen(int w, int h){
+    if (!IsWindowFullscreen())
+    {
+        int screen = GetCurrentMonitor();
+        SetWindowSize(GetMonitorWidth(screen), GetMonitorHeight(screen));
+        ToggleFullscreen();
+    }else{
+        ToggleFullscreen();
+        SetWindowSize(w, h);
+    }
+    
+}
 
 int main()
 {
@@ -26,14 +38,20 @@ int main()
     bool isGameOver = false;
     std::string winner;
 
-    Ball ball = Ball(screen_w/2, screen_h/2, 10, 10, 10);
+    InitAudioDevice();   
+    Sound gameOverTheme = LoadSound("src/sounds/over.mp3");
+    Sound paddle = LoadSound("src/sounds/paddle.mp3");
+    Sound wall = LoadSound("src/sounds/wall.mp3");
+    Sound point = LoadSound("src/sounds/point.mp3");
+
+    Ball ball = Ball(screen_w/2, screen_h/2, 13, 10, 10, wall);
     Player player2;
 
     player2.setWidth(12.5);
     player2.setHeight(120);
     player2.setX(screen_w - player2.getWidth() - 10);
     player2.setY(screen_h/2 - player2.getHeight()/2);
-    player2.setSpeed(9);
+    player2.setSpeed(12);
     player2.setName("Gracz 2");
     player2.setControlType("arrow");
 
@@ -43,7 +61,7 @@ int main()
     player1.setHeight(120);
     player1.setX(10);
     player1.setY(screen_h/2 - 60);
-    player1.setSpeed(9);
+    player1.setSpeed(12);
     player1.setControlType("wsad");
     player1.setName("Gracz 1");
 
@@ -53,33 +71,44 @@ int main()
     cpu.setHeight(120);
     cpu.setX(10);
     cpu.setY(screen_h/2 - cpu.getHeight()/2);
-    cpu.setSpeed(9);
+    cpu.setSpeed(7);
     cpu.setName("Komputer");
 
+
+    
     InitWindow(screen_w, screen_h, "Upong");
+
     SetTargetFPS(60);
     while (!WindowShouldClose())
     {
+
+       
+        
 
         if (!isGameOver)
         {
 
             if (ball.getX() - ball.getRadius() <= 0){
-                player2.setScore(player2.getScore() + 1); // Increment player2's score
+                PlaySound(point);
+                player2.setScore(player2.getScore() + 1);
                 std::cout << "x: " << ball.getX() << " y: " << ball.getY() << std::endl;
                 ball.Reset();
             }
             else if (CheckCollisionCircleRec(Vector2{ball.getX(), ball.getY()}, ball.getRadius(), Rectangle{player1.getX(), player1.getY(), player1.getWidth(), player1.getHeight()})){
                 ball.setSpeedX(ball.getSpeedX() *-1);
+                PlaySound(paddle);
             }
             else if (CheckCollisionCircleRec(Vector2{ball.getX(), ball.getY()}, ball.getRadius(), Rectangle{player2.getX(), player2.getY(), player2.getWidth(), player2.getHeight()}) || ball.getX() == 5){
                 ball.setSpeedX(ball.getSpeedX() *-1);
+                PlaySound(paddle);
             }
             else if (CheckCollisionCircleRec(Vector2{ball.getX(), ball.getY()}, ball.getRadius(), Rectangle{cpu.getX(), cpu.getY(), cpu.getWidth(), cpu.getHeight()}) || ball.getX() == 5){
                 ball.setSpeedX(ball.getSpeedX() *-1);
+                PlaySound(paddle);
             }
             else if (ball.getX() + ball.getRadius() >= GetScreenWidth())
             {
+                PlaySound(point);
                 cpu.setScore(cpu.getScore() +1);
                 player1.setScore(player1.getScore() +1);
                 ball.Reset();
@@ -91,6 +120,7 @@ int main()
                 Player arr[3] = {player1, player2, cpu};
                 winner = "Wygral: " + whoIsWinner(arr);
                 const char *c = winner.c_str();
+                PlaySound(gameOverTheme);
                 DrawText(c, screen_w - MeasureText(winner.c_str(), 80), screen_h/2, 80, WHITE);
                 EndDrawing();
             }
@@ -163,10 +193,25 @@ int main()
             const char *c = winner.c_str();
             DrawText(c, (screen_w - MeasureText(c, 80))/2, screen_h/2, 80, WHITE);
 
+
+            if (IsKeyPressed(KEY_ENTER))
+            {
+                StopSound(gameOverTheme);
+                cpu.setScore(0);
+                player2.setScore(0);
+                player1.setScore(0); 
+                isGameOver = false;
+            }
+            
             EndDrawing();
         }
+        if (IsKeyPressed(KEY_F11))
+        {
+            //fullScreen(screen_w, screen_h);
+        }
     }
-    
+    UnloadSound(gameOverTheme);
+    CloseAudioDevice();
     CloseWindow();
     return 0;
 }

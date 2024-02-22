@@ -34,5 +34,6 @@ class Player
         std::string getControlType();
         int getScore();
         std::string getName();
+
 };
 

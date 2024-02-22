@@ -32,8 +32,8 @@ void fullScreen(int w, int h){
 
 int main()
 {
-    const int screen_w = 1200;
-    const int screen_h = 800;
+    const int screen_w = 1920;
+    const int screen_h = 1080;
     bool isCpu = true;
     bool isGameOver = false;
     std::string winner;
@@ -81,10 +81,6 @@ int main()
     SetTargetFPS(60);
     while (!WindowShouldClose())
     {
-
-       
-        
-
         if (!isGameOver)
         {
 
@@ -207,7 +203,7 @@ int main()
         }
         if (IsKeyPressed(KEY_F11))
         {
-            //fullScreen(screen_w, screen_h);
+            fullScreen(screen_w, screen_h);
         }
     }
     UnloadSound(gameOverTheme);

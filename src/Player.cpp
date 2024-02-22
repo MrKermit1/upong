@@ -2,6 +2,7 @@
 #include <raylib.h>
 #include <iostream>
 
+
 Player::Player(){}
 
 Player::Player(int posX, int posY, float width, float height, int speed){
@@ -113,4 +114,3 @@ int Player::getScore(){
 std::string Player::getName(){
     return name;
 }
-
